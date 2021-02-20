@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Data;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,7 +13,10 @@ public class EnemySpawnerLogic : MonoBehaviour
 	private void Start()
 	{
 		toSpawn = Random.Range(1,9);
-		StartCoroutine(spawnAll());
+		if (Pterodyactl.eOnScreenPterodyactl+toSpawn >= Pterodyactl.eMaxPterodyactl)
+			toSpawn = Pterodyactl.eMaxPterodyactl - Pterodyactl.eOnScreenPterodyactl;
+		if (toSpawn>0)
+			StartCoroutine(spawnAll());
 	}
 
 	IEnumerator spawnAll()

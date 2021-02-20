@@ -36,7 +36,7 @@ public class MovingLight : MonoBehaviour
 			nextLerp = MovingLightTrain.coords[lightIndex];
 			nextLerp.z = -10f;
 		}
-		_l.color = StaticHelpers.lightColor;
+		_l.color = Pterodyactl.lightColorPterodyactl;
 	}
 
 

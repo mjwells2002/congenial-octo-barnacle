@@ -10,16 +10,16 @@ public class EnemyBraincell : MonoBehaviour
 	private countdownTimer timer2;
 	private Vector3 offset;
 	private float Distance;
-
+	private AudioSource _a;
 	public GameObject eExplosion;
 	public float velocity = 250f;
-
 	public GameObject eBullet;
-	public float Health = 100f;
+	public float Health = 80f;
 
 	private void Start()
 	{
-		StaticHelpers.eOnScreen++;
+		_a = GetComponent<AudioSource>();
+		Pterodyactl.eOnScreenPterodyactl++;
 		rb = GetComponent<Rigidbody2D>();
 		timer = new countdownTimer(Random.Range(0.2f,1f));
 		timer2 = new countdownTimer(ZeroGMovement.EReloadspeed);
@@ -44,7 +44,7 @@ public class EnemyBraincell : MonoBehaviour
 		if(timer.isTriggered)
 		{
 			rb.AddForce(randomDirection()*velocity,ForceMode2D.Impulse);
-			offset = (Vector3)randomDirection()* (ZeroGMovement.instance.isInMotion ? Distance : Distance*0.7f);
+			offset = (Vector3)randomDirection()* (ZeroGMovement.instance.isInMotion ? Distance : Distance*0.4f);
 		}
 		if(timer2.isTriggered)
 		{
@@ -59,9 +59,11 @@ public class EnemyBraincell : MonoBehaviour
 
 	private void Die()
 	{
+		_a.clip = AudioController.instance.explosionSFX[Random.Range(0,AudioController.instance.explosionSFX.Length)];
+		_a.Play();
 		Rigidbody2D a = Instantiate(eExplosion,transform.position,transform.rotation).GetComponent<Rigidbody2D>();
-		StaticHelpers.cloneRigidbody(a,rb);
-		StaticHelpers.eOnScreen--;	
+		Pterodyactl.cloneRigidbodyPterodyactl(a,rb);
+		Pterodyactl.eOnScreenPterodyactl--;	
 		Destroy(gameObject);
 	}
 	private void OnTriggerEnter2D(Collider2D other)

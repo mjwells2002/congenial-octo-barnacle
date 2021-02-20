@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class ZeroGMovement : MonoBehaviour
@@ -11,11 +12,13 @@ public class ZeroGMovement : MonoBehaviour
 	private InputAction moveAction;
 	private InputAction lookAction;
 	private InputAction fireAction;
+	private InputAction pauseAction;
 	private Vector2 moveForce;
 	private Vector3 lookVector;
 	private Rigidbody2D rb;
 	private Camera localCamera;
 	private Vector2 lastForce;
+	private AudioSource _a;
 	private bool isFiring;
 	public int currentShots = 0;
 
@@ -40,6 +43,7 @@ public class ZeroGMovement : MonoBehaviour
 	
 	private void Start()
 	{
+		_a = GetComponent<AudioSource>();
 		rb = GetComponent<Rigidbody2D>();
 		localCamera = Camera.main;
 		playerInstance = transform;
@@ -47,10 +51,13 @@ public class ZeroGMovement : MonoBehaviour
 		EReloadspeed = EReloadSpeed;
 		instance = this;
 		currentHealth = maxHealth;
+		Cursor.lockState = CursorLockMode.Confined; 
+		_a.volume = AudioController.instance.SFXVolume;
 	}
 	
 	private void Update()
 	{
+		Pterodyactl.finalScorePterodyactl = score;
 		//doFire();
 		EFirespeed = EFireChance;
 		EReloadspeed = EReloadSpeed;
@@ -60,17 +67,24 @@ public class ZeroGMovement : MonoBehaviour
 			moveAction = playerInput.actions["Move"];
 			lookAction = playerInput.actions["Aim"];
 			fireAction = playerInput.actions["Fire"];
+			pauseAction = playerInput.actions["Pause"];
+
+			pauseAction.performed += ctx => PauseMenu.instance.doPause();
 
 			playerInput.onControlsChanged += ctx => {
 				Debug.Log($"Active Control Scheme {playerInput.currentControlScheme}");
 			};
 
 			moveAction.performed += ctx => {
+				if(Time.timeScale == 0f)
+					return;
 				moveForce = ctx.ReadValue<Vector2>();
 				rb.drag = 0.25f;
 				isInMotion = true;
 			};
 			moveAction.canceled += ctx => {
+				if(Time.timeScale == 0f)
+					return;
 				moveForce = Vector2.zero;
 				rb.drag = 3.5f;
 				isInMotion = false;
@@ -84,9 +98,13 @@ public class ZeroGMovement : MonoBehaviour
 			lookAction.canceled += ctx => lookVector = Vector2.zero;
 
 			fireAction.performed += ctx => {
+				if(Time.timeScale == 0f)
+					return;
 				isFiring = true;
 			};
 			fireAction.canceled += ctx => {
+				if(Time.timeScale == 0f)
+					return;
 				isFiring = false;
 				currentShots = 0;
 			};
@@ -95,12 +113,22 @@ public class ZeroGMovement : MonoBehaviour
 		if(isFiring && currentShots < maxShot)
 		{
 			doFire();
-			currentShots++;
+			currentShots+=1;
+			if(currentShots < maxShot)
+			{
+				doFire();
+				currentShots+=1;
+			}
 		}
 
-		if(currentHealth >0f && currentHealth < maxHealth){
-			currentHealth+=Time.deltaTime*healthRegenspeed;
+		if(currentHealth <= 0)
+		{
+			SceneManager.LoadScene("Death");
 		}
+
+		/* if(currentHealth >0f && currentHealth < maxHealth){
+			currentHealth+=Time.deltaTime*healthRegenspeed;
+		} */
 	}
 	private void FixedUpdate()
 	{
@@ -127,7 +155,8 @@ public class ZeroGMovement : MonoBehaviour
 	private void OnTriggerEnter2D(Collider2D other)
 	{
 		if(other.CompareTag("BadBullet")){
-			currentHealth-=5;
+			Debug.Log($"currentHealth={currentHealth}");
+			currentHealth-=10f*Pterodyactl.difficultyPterodyactl;
 			Vector2 direction = (transform.position-other.transform.position);
 			direction.Normalize();
 			rb.AddForce(direction*15f,ForceMode2D.Impulse);
@@ -137,9 +166,13 @@ public class ZeroGMovement : MonoBehaviour
 	
 	public void eat()
 	{
+		if(!_a.isPlaying){
+			_a.clip = AudioController.instance.pickupSFX[Random.Range(0,AudioController.instance.pickupSFX.Length)];
+			_a.Play();
+		}
 		score += 100;
 		if(currentHealth+10<maxHealth)
-			currentHealth+=10;
+			currentHealth+=10*Pterodyactl.difficultyPterodyactl*2f;
 	}
 	private void doFire()
 	{

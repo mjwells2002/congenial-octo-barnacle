@@ -101,12 +101,13 @@ public class HealthAndProgressionController : MonoBehaviour
 
 	private void newPerk()
 	{
-		perks perk = StaticHelpers.RandomEnumValue<perks>();
-		StaticHelpers.difficulty += 0.01f;
+		perks perk = Pterodyactl.RandomEnumValuePterodyactl<perks>();
+		Pterodyactl.difficultyPterodyactl += 0.005f;
+		Debug.Log(Pterodyactl.difficultyPterodyactl);
 		switch(perk){
 			case perks.Burstshot:
 				BurstshotLevel +=1;
-				//BurstshotLevel = Mathf.Clamp(BurstshotLevel,1,15);
+				BurstshotLevel = Mathf.Clamp(BurstshotLevel,1,20);
 				ZeroGMovement.instance.maxShot = BurstshotLevel;
 				break;
 			case perks.ExplosiveBullets:
@@ -116,14 +117,14 @@ public class HealthAndProgressionController : MonoBehaviour
 				break;
 			case perks.Healthboost:
 				HealthboostLevel +=1;
-				HealthboostLevel = Mathf.Clamp(HealthboostLevel,1,30);
-				ZeroGMovement.instance.currentHealth += (ZeroGMovement.instance.defaultMaxHealth * HealthboostLevel - ZeroGMovement.instance.currentHealth);
+				HealthboostLevel = Mathf.Clamp(HealthboostLevel,1,2);
+				//zeroGMovement.instance.currentHealth += (ZeroGMovement.instance.defaultMaxHealth * HealthboostLevel - ZeroGMovement.instance.currentHealth);
 				ZeroGMovement.instance.maxHealth = ZeroGMovement.instance.defaultMaxHealth * HealthboostLevel;
 				break;
 			case perks.Rebound:
 				ReboundLevel +=1;
 				ReboundLevel = Mathf.Clamp(ReboundLevel,1,3);
-				StaticHelpers.maxReboundPlayer = ReboundLevel;
+				Pterodyactl.maxReboundPlayerPterodyactl = ReboundLevel;
 				break;
 		}
 
@@ -131,17 +132,17 @@ public class HealthAndProgressionController : MonoBehaviour
 
 	IEnumerator fadeToColor(Color c)
 	{
-		StaticHelpers.lightColor = Color.black;
+		Pterodyactl.lightColorPterodyactl = Color.black;
 		for (float i = 0f; i<=1f; i+=0.01f)
 		{
-			StaticHelpers.lightColor = c*i;
+			Pterodyactl.lightColorPterodyactl = c*i;
 			yield return new WaitForFixedUpdate();
 		}
 		while (isFading){yield return new WaitForFixedUpdate();}
 		Color t = Color.black;
 		for (float i = 0f; i<=1f; i+=0.01f)
 		{
-			StaticHelpers.lightColor = Color.Lerp(StaticHelpers.lightColor,t,0.1f);
+			Pterodyactl.lightColorPterodyactl = Color.Lerp(Pterodyactl.lightColorPterodyactl,t,0.1f);
 			yield return new WaitForFixedUpdate();
 		}
 	}

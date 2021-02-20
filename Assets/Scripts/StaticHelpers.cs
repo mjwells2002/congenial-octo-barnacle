@@ -4,14 +4,16 @@ using UnityEngine;
 using System;
 using System.Collections;
 
-public static class StaticHelpers
+public static class Pterodyactl
 {
-	public static int maxReboundPlayer = 1;
-	public static int eOnScreen = 0;
-	public static Color lightColor = Color.black;
-	public static float difficulty = 1f;
-	static System.Random _R = new System.Random ();
-	public static void cloneRigidbody(Rigidbody2D a,Rigidbody2D rb){
+	public static int maxReboundPlayerPterodyactl = 1;
+	public static int eOnScreenPterodyactl = 0;
+	public static int eMaxPterodyactl = 10;
+	public static Color lightColorPterodyactl = Color.black;
+	public static float difficultyPterodyactl = 0.5f;
+	public static int finalScorePterodyactl;
+	static System.Random _RPterodyactl = new System.Random ();
+	public static void cloneRigidbodyPterodyactl(Rigidbody2D a,Rigidbody2D rb){
 		a.velocity = rb.velocity;
 		a.angularVelocity = rb.angularVelocity;
 		a.angularDrag = rb.angularDrag;
@@ -27,10 +29,10 @@ public static class StaticHelpers
 		a.simulated = rb.simulated;
 	}
 
-	public static T RandomEnumValue<T> ()
+	public static T RandomEnumValuePterodyactl<T> ()
 	{
 		var v = Enum.GetValues (typeof (T));
-		return (T) v.GetValue (_R.Next(v.Length));
+		return (T) v.GetValue (_RPterodyactl.Next(v.Length));
 	}
 
 	

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ public class BulletLogic : MonoBehaviour
 	private ParticleSystem _particle;
 	private int usedBounces;
 	private Rigidbody2D rb;
-
+	private AudioSource _a;
 	public bool isExplsive = false;
 	public GameObject explosiveParticles;
 	public GameObject explosiveParticlesTrail;
@@ -25,7 +24,9 @@ public class BulletLogic : MonoBehaviour
 		{
 			explosiveParticles.SetActive(true);
 			Collider2D[] a = Physics2D.OverlapCircleAll(transform.position,explosionRaidus);
-			a.ToList().ForEach(collider => {
+			_a.clip = AudioController.instance.explosionSFX[Random.Range(0,AudioController.instance.explosionSFX.Length)];
+			_a.Play();
+			a.ToList().ForEach(collider => { //pterodactyl
 				if(collider.CompareTag("BadGuy")){
 					collider.gameObject.GetComponent<EnemyBraincell>().damage(transform);
 				}
@@ -50,11 +51,14 @@ public class BulletLogic : MonoBehaviour
 		if(isExplsive)
 			explosiveParticlesTrail.SetActive(isExplsive);
 		if(explosiveParticlesTrail != null)
-			totalBounces = StaticHelpers.maxReboundPlayer;
-		
+			totalBounces = Pterodyactl.maxReboundPlayerPterodyactl;
+		_a = GetComponent<AudioSource>();
 		rb = GetComponent<Rigidbody2D>();
 		_particle = GetComponent<ParticleSystem>();
 		usedBounces = totalBounces;
+		_a.clip = AudioController.instance.laserSFX[Random.Range(0,AudioController.instance.laserSFX.Length)];
+		_a.volume = AudioController.instance.SFXVolume;
+		_a.Play();
 	}
 	private void OnTriggerEnter2D(Collider2D other)
 	{

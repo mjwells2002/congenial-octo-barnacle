@@ -19,7 +19,7 @@ public class ScreenSpaceEnemySpawnerController : MonoBehaviour
 
     void Update()
     {
-		if(StaticHelpers.eOnScreen == 0)
+		if(Pterodyactl.eOnScreenPterodyactl == 0)
 		{
 			if(!isSpawned)
 				spawnWave();
@@ -30,7 +30,7 @@ public class ScreenSpaceEnemySpawnerController : MonoBehaviour
 			
         if(timer.isTriggered)
 		{
-			if(randomChance((int)(100*StaticHelpers.difficulty)))
+			if(randomChance((int)(100*Pterodyactl.difficultyPterodyactl)))
 			{
 				spawnWave();
 			}
@@ -65,12 +65,13 @@ public class ScreenSpaceEnemySpawnerController : MonoBehaviour
 
 	private void spawnWave()
 	{
-		Vector2[] waveCoords = randomCoords((int)Random.Range(3,(int)100*(StaticHelpers.difficulty/10f)));
+		Vector2[] waveCoords = randomCoords((int)Random.Range(3,(int)100*(Pterodyactl.difficultyPterodyactl/10f)));
 		
 		waveCoords.ToList().ForEach(x => {
 			
-			Debug.Log(x);
-			Instantiate(spawner,new Vector3(x.x,x.y,-1f),Quaternion.identity);
+			//Debug.Log(x);
+			if (Pterodyactl.eOnScreenPterodyactl <= Pterodyactl.eMaxPterodyactl)
+				Instantiate(spawner,new Vector3(x.x,x.y,-1f),Quaternion.identity);
 		});
 		
 	}

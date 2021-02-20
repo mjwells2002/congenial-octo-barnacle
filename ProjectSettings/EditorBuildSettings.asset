@@ -6,8 +6,23 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/WebGLWarning.unity
+    guid: 28e89b80305624c56819ca133966da26
+  - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: a77088d69bb2275419d6e9922bf6774f
+  - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: 21221ce9c8d391d1bb33a94ab187a03f
+  - enabled: 1
+    path: Assets/Scenes/Death.unity
+    guid: 38a64669122c3053db52548d1657a569
+  - enabled: 1
+    path: Assets/Scenes/Timer.unity
+    guid: 75ffe711ea7767306b1ad42b3b6d7f07
+  - enabled: 1
+    path: Assets/Scenes/ShowControls.unity
+    guid: d83c64570bcc0509a99090c7fe71c5fc
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 4d23b655988a474bead154369b35de4c,
       type: 2}
